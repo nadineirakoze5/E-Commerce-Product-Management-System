@@ -1,0 +1,20 @@
+spring:
+  application:
+    name: E-commerce
+
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    password: 123
+    username: postgres
+    url: jdbc:postgresql://localhost:5432/postgres
+
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+
+server:
+  port: 8087
