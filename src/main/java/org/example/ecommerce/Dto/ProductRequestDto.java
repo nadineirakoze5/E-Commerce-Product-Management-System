@@ -10,6 +10,6 @@ public class ProductRequestDto {
     private String name;
     private double price;
     private int stockQuantity;
-    private Long categoryId;
+   // private Long categoryId;
 
 }

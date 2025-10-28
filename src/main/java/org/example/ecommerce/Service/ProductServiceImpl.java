@@ -3,29 +3,40 @@ package org.example.ecommerce.Service;
 import org.example.ecommerce.Dto.ProductRequestDto;
 import org.example.ecommerce.Dto.ProductResponseDto;
 import org.example.ecommerce.ExceptionHandlerHandling.RuntimeExceptionHandling;
+import org.example.ecommerce.Model.Product;
+import org.example.ecommerce.Repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final List<ProductResponseDto> products = new ArrayList<>();
 
-    @Override
+    private final ProductRepository productRepository;
+
+    public ProductServiceImpl(ProductRepository productRepository) {
+        this.productRepository = productRepository;
+    }
+
     public ProductResponseDto createProduct(ProductRequestDto productRequest) {
-        ProductResponseDto product = new ProductResponseDto();
+        Product product = new Product();
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
+        product.setStockQuantity(productRequest.getStockQuantity());
 
-        products.add(product);
-        return product;
+        productRepository.save(product);
+        return new ProductResponseDto(product.getId(),product.getName(),product.getPrice(),product.getStockQuantity());
     }
 
     @Override
     public List<ProductResponseDto> getAllProducts() {
-        return new ArrayList<>(products);
+        return productRepository.findAll().stream().map(product -> new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getStockQuantity()))
+                .collect(Collectors.toList());
+
     }
 
     @Override
