@@ -24,12 +24,17 @@ public class ProductServiceImpl implements ProductService {
 
     public ProductResponseDto createProduct(ProductRequestDto productRequest) {
         Product product = new Product();
+
+        if (productRepository.existsByName(product.getName())) {
+            throw new RuntimeExceptionHandling("Product with name " + product.getName() + " already exists");
+        }
+
         product.setName(productRequest.getName());
         product.setPrice(productRequest.getPrice());
         product.setStockQuantity(productRequest.getStockQuantity());
 
         productRepository.save(product);
-        return new ProductResponseDto(product.getId(),product.getName(),product.getPrice(),product.getStockQuantity());
+        return new ProductResponseDto(product.getId(), product.getName(), product.getPrice(), product.getStockQuantity());
     }
 
     @Override
@@ -41,32 +46,10 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto getProductById(Long id) {
-        ProductResponseDto product = products.stream()
-                .filter(products -> products.getId().equals(id))
-                .findFirst()
-                .orElse(null);
-        if (product == null) {
-            throw new RuntimeExceptionHandling(id);
+        for (ProductResponseDto product : products) {
+            if (product.getId().equals(id)) {
+            }
         }
-        return product;
-    }
-
-    @Override
-    public ProductResponseDto updateProduct(Long id, ProductRequestDto productRequest) {
-        ProductResponseDto existingProduct = getProductById(id);
-        if (existingProduct != null) {
-            existingProduct.setName(productRequest.getName());
-            existingProduct.setPrice(productRequest.getPrice());
-            return existingProduct;
-        }
-        return null;
-    }
-
-    @Override
-    public void deleteProduct(Long id) {
-        ProductResponseDto productToDelete = getProductById(id);
-        if (productToDelete != null) {
-            products.remove(productToDelete);
-        }
+        return products;
     }
 }
